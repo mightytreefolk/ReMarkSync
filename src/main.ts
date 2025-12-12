@@ -22,25 +22,22 @@ class SyncProgressModal extends Modal {
 
     onOpen() {
         const { contentEl } = this;
-        contentEl.createEl('h2', { text: 'Syncing ReMarkable' });
+        contentEl.createEl('h2', { text: 'Syncing reMarkable' });
 
         this.statusEl = contentEl.createEl('p', { text: 'Starting sync...' });
 
-        const progressContainer = contentEl.createDiv({ cls: 'progress-container' });
-        progressContainer.style.cssText = 'width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-top: 10px;';
+        const progressContainer = contentEl.createDiv({ cls: 'remarksync-progress-container' });
 
-        this.progressEl = progressContainer.createDiv({ cls: 'progress-bar' });
-        this.progressEl.style.cssText = 'width: 0%; height: 100%; background: #7c3aed; transition: width 0.3s;';
+        this.progressEl = progressContainer.createDiv({ cls: 'remarksync-progress-bar' });
 
         this.detailsEl = contentEl.createEl('p', {
-            cls: 'setting-item-description',
-            attr: { style: 'margin-top: 10px; font-size: 12px;' }
+            cls: 'remarksync-progress-details setting-item-description'
         });
     }
 
     setProgress(percent: number, status: string, details?: string) {
         if (this.progressEl) {
-            this.progressEl.style.width = `${percent}%`;
+            this.progressEl.setCssProps({ '--remarksync-progress': `${percent}%` });
         }
         if (this.statusEl) {
             this.statusEl.textContent = status;
@@ -52,7 +49,7 @@ class SyncProgressModal extends Modal {
 
     showResult(result: SyncResult) {
         if (this.statusEl) {
-            this.statusEl.textContent = 'Sync Complete!';
+            this.statusEl.textContent = 'Sync complete';
         }
         if (this.detailsEl) {
             const parts = [];
@@ -64,8 +61,12 @@ class SyncProgressModal extends Modal {
             this.detailsEl.textContent = parts.join(', ');
         }
         if (this.progressEl) {
-            this.progressEl.style.width = '100%';
-            this.progressEl.style.background = result.errors.length > 0 ? '#f59e0b' : '#22c55e';
+            this.progressEl.setCssProps({ '--remarksync-progress': '100%' });
+            if (result.errors.length > 0) {
+                this.progressEl.addClass('remarksync-progress-bar--warning');
+            } else {
+                this.progressEl.addClass('remarksync-progress-bar--success');
+            }
         }
     }
 
@@ -88,20 +89,18 @@ class ImportProgressModal extends Modal {
 
     onOpen() {
         const { contentEl } = this;
-        contentEl.createEl('h2', { text: 'Importing ReMarkable File' });
+        contentEl.createEl('h2', { text: 'Importing reMarkable file' });
 
         this.statusEl = contentEl.createEl('p', { text: 'Parsing file...' });
 
-        const progressContainer = contentEl.createDiv({ cls: 'progress-container' });
-        progressContainer.style.cssText = 'width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-top: 10px;';
+        const progressContainer = contentEl.createDiv({ cls: 'remarksync-progress-container' });
 
-        this.progressEl = progressContainer.createDiv({ cls: 'progress-bar' });
-        this.progressEl.style.cssText = 'width: 0%; height: 100%; background: #7c3aed; transition: width 0.3s;';
+        this.progressEl = progressContainer.createDiv({ cls: 'remarksync-progress-bar' });
     }
 
     setProgress(percent: number, status: string) {
         if (this.progressEl) {
-            this.progressEl.style.width = `${percent}%`;
+            this.progressEl.setCssProps({ '--remarksync-progress': `${percent}%` });
         }
         if (this.statusEl) {
             this.statusEl.textContent = status;
@@ -129,31 +128,31 @@ export default class RemarkableSyncPlugin extends Plugin {
         this.addSettingTab(new RemarkableSyncSettingTab(this.app, this));
 
         // Add ribbon icon for manual import
-        this.addRibbonIcon('file-input', 'Import .rm File', async () => {
-            await this.triggerImport();
+        this.addRibbonIcon('file-input', 'Import .rm file', () => {
+            this.triggerImport();
         });
 
         // Add ribbon icon for sync
-        this.addRibbonIcon('refresh-cw', 'Sync ReMarkable', async () => {
+        this.addRibbonIcon('refresh-cw', 'Sync reMarkable', async () => {
             await this.runSync();
         });
 
         // Add commands
         this.addCommand({
             id: 'import-rm-file',
-            name: 'Import ReMarkable .rm file',
+            name: 'Import reMarkable .rm file',
             callback: () => this.triggerImport()
         });
 
         this.addCommand({
             id: 'sync-remarkable',
-            name: 'Sync from ReMarkable',
-            callback: () => this.runSync()
+            name: 'Sync from reMarkable',
+            callback: () => void this.runSync()
         });
 
         this.addCommand({
             id: 'full-resync-remarkable',
-            name: 'Full resync from ReMarkable',
+            name: 'Full resync from reMarkable',
             callback: async () => {
                 this.settings.lastSyncTime = 0;
                 await this.saveSettings();
@@ -181,9 +180,9 @@ export default class RemarkableSyncPlugin extends Plugin {
     }
 
     /**
-     * Detect ReMarkable desktop app path
+     * Detect reMarkable desktop app path
      */
-    async detectRemarkablePath(): Promise<string | null> {
+    detectRemarkablePath(): string | null {
         const homeDir = process.env.HOME || '';
         const possiblePaths = [
             path.join(homeDir, 'Library/Containers/com.remarkable.desktop/Data/Library/Application Support/remarkable/desktop'),
@@ -192,12 +191,12 @@ export default class RemarkableSyncPlugin extends Plugin {
 
         for (const p of possiblePaths) {
             if (fs.existsSync(p)) {
-                new Notice(`Found ReMarkable data at: ${p}`);
+                new Notice(`Found reMarkable data at: ${p}`);
                 return p;
             }
         }
 
-        new Notice('Could not find ReMarkable desktop app data folder');
+        new Notice('Could not find reMarkable desktop app data folder');
         return null;
     }
 
@@ -280,13 +279,13 @@ export default class RemarkableSyncPlugin extends Plugin {
     /**
      * Open file picker and trigger import
      */
-    async triggerImport() {
+    triggerImport(): void {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.rm';
         input.multiple = true;
 
-        input.onchange = async (e: Event) => {
+        input.onchange = (e: Event) => {
             const target = e.target as HTMLInputElement;
             const files = Array.from(target.files || []);
             if (files.length === 0) return;
@@ -294,31 +293,33 @@ export default class RemarkableSyncPlugin extends Plugin {
             const progressModal = new ImportProgressModal(this.app);
             progressModal.open();
 
-            try {
-                const results: string[] = [];
+            (async () => {
+                try {
+                    const results: string[] = [];
 
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const fileProgress = ((i) / files.length) * 100;
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const fileProgress = ((i) / files.length) * 100;
 
-                    progressModal.setProgress(
-                        fileProgress + 10,
-                        `Parsing ${file.name} (${i + 1}/${files.length})...`
-                    );
+                        progressModal.setProgress(
+                            fileProgress + 10,
+                            `Parsing ${file.name} (${i + 1}/${files.length})...`
+                        );
 
-                    const savedPath = await this.processFile(file, progressModal, fileProgress);
-                    results.push(savedPath);
+                        const savedPath = await this.processFile(file, progressModal, fileProgress);
+                        results.push(savedPath);
+                    }
+
+                    progressModal.setProgress(100, 'Complete');
+                    await sleep(500);
+                    progressModal.close();
+
+                    new Notice(`Successfully imported ${files.length} file(s)`);
+                } catch (error) {
+                    progressModal.close();
+                    new Notice(`Import failed: ${(error as Error).message}`);
                 }
-
-                progressModal.setProgress(100, 'Complete!');
-                await sleep(500);
-                progressModal.close();
-
-                new Notice(`Successfully imported ${files.length} file(s)`);
-            } catch (error) {
-                progressModal.close();
-                new Notice(`Import failed: ${(error as Error).message}`);
-            }
+            })();
         };
 
         input.click();

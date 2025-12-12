@@ -62,14 +62,14 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        containerEl.createEl('h1', { text: 'ReMarkable Sync Settings' });
+        new Setting(containerEl).setName('reMarkable sync settings').setHeading();
 
         // Source folder section
-        containerEl.createEl('h2', { text: 'Source' });
+        new Setting(containerEl).setName('Source').setHeading();
 
         new Setting(containerEl)
-            .setName('ReMarkable data folder')
-            .setDesc('Path to the ReMarkable desktop app data folder. Leave empty to auto-detect.')
+            .setName('reMarkable data folder')
+            .setDesc('Path to the reMarkable desktop app data folder. Leave empty to auto-detect.')
             .addText(text => text
                 .setPlaceholder('Auto-detect')
                 .setValue(this.plugin.settings.remarkablePath)
@@ -80,11 +80,11 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Auto-detect folder')
-            .setDesc('Attempt to find the ReMarkable desktop app data folder automatically')
+            .setDesc('Attempt to find the reMarkable desktop app data folder automatically')
             .addButton(button => button
                 .setButtonText('Detect')
                 .onClick(async () => {
-                    const detected = await this.plugin.detectRemarkablePath();
+                    const detected = this.plugin.detectRemarkablePath();
                     if (detected) {
                         this.plugin.settings.remarkablePath = detected;
                         await this.plugin.saveSettings();
@@ -93,7 +93,7 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
                 }));
 
         // Destination folder section
-        containerEl.createEl('h2', { text: 'Destination' });
+        new Setting(containerEl).setName('Destination').setHeading();
 
         new Setting(containerEl)
             .setName('Sync folder')
@@ -107,11 +107,11 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
                 }));
 
         // Auto-sync section
-        containerEl.createEl('h2', { text: 'Auto Sync' });
+        new Setting(containerEl).setName('Auto sync').setHeading();
 
         new Setting(containerEl)
             .setName('Enable auto-sync')
-            .setDesc('Automatically sync changes from ReMarkable at regular intervals')
+            .setDesc('Automatically sync changes from reMarkable at regular intervals')
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.autoSync)
                 .onChange(async (value) => {
@@ -181,7 +181,7 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
         intervalSetting.controlEl.createSpan({ text: 'hr', cls: 'setting-item-description' });
 
         // What to sync section
-        containerEl.createEl('h2', { text: 'Content Types' });
+        new Setting(containerEl).setName('Content types').setHeading();
 
         new Setting(containerEl)
             .setName('Sync notebooks')
@@ -204,7 +204,7 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
                 }));
 
         // Import options section
-        containerEl.createEl('h2', { text: 'Import Options' });
+        new Setting(containerEl).setName('Import options').setHeading();
 
         new Setting(containerEl)
             .setName('Preserve layers')
@@ -239,13 +239,13 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
                 }));
 
         // Manual sync section
-        containerEl.createEl('h2', { text: 'Manual Actions' });
+        new Setting(containerEl).setName('Manual actions').setHeading();
 
         new Setting(containerEl)
             .setName('Sync now')
             .setDesc('Manually trigger a sync')
             .addButton(button => button
-                .setButtonText('Sync Now')
+                .setButtonText('Sync now')
                 .setCta()
                 .onClick(async () => {
                     await this.plugin.runSync();
@@ -255,7 +255,7 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
             .setName('Full resync')
             .setDesc('Re-import all documents (reimports everything with current settings)')
             .addButton(button => button
-                .setButtonText('Full Resync')
+                .setButtonText('Full resync')
                 .setWarning()
                 .onClick(async () => {
                     this.plugin.settings.lastSyncTime = 0;
@@ -264,25 +264,21 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
                 }));
 
         // Status section
-        containerEl.createEl('h2', { text: 'Status' });
+        new Setting(containerEl).setName('Status').setHeading();
 
         const lastSync = this.plugin.settings.lastSyncTime
             ? new Date(this.plugin.settings.lastSyncTime).toLocaleString()
             : 'Never';
 
-        containerEl.createEl('p', {
-            text: `Last sync: ${lastSync}`,
-            cls: 'setting-item-description'
-        });
+        new Setting(containerEl)
+            .setName('Last sync')
+            .setDesc(lastSync);
 
         // Dependencies notice
-        containerEl.createEl('h2', { text: 'Dependencies' });
+        new Setting(containerEl).setName('Dependencies').setHeading();
 
-        const depNotice = containerEl.createDiv({ cls: 'setting-item-description' });
-        const p1 = depNotice.createEl('p');
-        p1.appendText('This plugin requires the ');
-        p1.createEl('strong', { text: 'Excalidraw' });
-        p1.appendText(' plugin to view imported drawings.');
-        depNotice.createEl('p', { text: 'Install it from: Settings → Community plugins → Browse → Search "Excalidraw"' });
+        new Setting(containerEl)
+            .setName('Excalidraw plugin required')
+            .setDesc('This plugin requires the Excalidraw plugin to view imported drawings. Install it from: Settings → Community plugins → Browse → Search "Excalidraw"');
     }
 }

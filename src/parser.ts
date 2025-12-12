@@ -211,7 +211,7 @@ export class RemarkableParser {
             }
 
             // Check if this is a LINE_DEF block
-            if (flag === V6BlockType.LINE_DEF) {
+            if (flag === (V6BlockType.LINE_DEF as number)) {
                 const blockEnd = this.cursor + length;
                 const strokeResult = this.parseV6Stroke(blockEnd);
 
@@ -443,7 +443,7 @@ export class RemarkableParser {
 
         const pen = this.getInt32() as PenType;
         const color = this.getInt32() as RMColor;
-        const _unknown = this.getInt32(); // Padding/selection flag
+        this.getInt32(); // Padding/selection flag (unused)
         const baseWidth = this.getFloat32();
 
         // v5 has an extra field

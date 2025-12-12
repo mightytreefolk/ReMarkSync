@@ -1,4 +1,4 @@
-import { App, Notice, normalizePath, TFolder } from 'obsidian';
+import { App, normalizePath } from 'obsidian';
 import { RemarkableParser } from './parser';
 import { ExcalidrawConverter, ConversionOptions } from './converter';
 import { RemarkableSyncSettings } from './settings';
@@ -66,12 +66,12 @@ export class SyncManager {
     }
 
     /**
-     * Discover all documents in the ReMarkable folder
+     * Discover all documents in the reMarkable folder
      */
-    async discoverDocuments(): Promise<RemarkableDocument[]> {
+    discoverDocuments(): RemarkableDocument[] {
         const remarkablePath = this.getRemarkablePath();
         if (!remarkablePath) {
-            throw new Error('ReMarkable data folder not found. Please set it in settings.');
+            throw new Error('reMarkable data folder not found. Please set it in settings.');
         }
 
         const documents: RemarkableDocument[] = [];
@@ -150,9 +150,9 @@ export class SyncManager {
     }
 
     /**
-     * Build folder path for a document based on ReMarkable folder hierarchy
+     * Build folder path for a document based on reMarkable folder hierarchy
      */
-    async buildFolderPath(doc: RemarkableDocument, allDocs: RemarkableDocument[]): Promise<string> {
+    buildFolderPath(doc: RemarkableDocument, allDocs: RemarkableDocument[]): string {
         const parts: string[] = [];
         let currentParent = doc.parent;
 
@@ -204,7 +204,7 @@ export class SyncManager {
 
         try {
             progressCallback?.('Discovering documents...', 5);
-            const documents = await this.discoverDocuments();
+            const documents = this.discoverDocuments();
 
             // Filter by settings
             let filteredDocs = documents;
@@ -236,7 +236,7 @@ export class SyncManager {
                 }
             }
 
-            progressCallback?.('Sync complete!', 100);
+            progressCallback?.('Sync complete', 100);
         } catch (e) {
             result.errors.push((e as Error).message);
         }
@@ -254,8 +254,8 @@ export class SyncManager {
             return 'skipped';
         }
 
-        // Build destination path (parent folders from ReMarkable hierarchy)
-        const parentPath = await this.buildFolderPath(doc, allDocs);
+        // Build destination path (parent folders from reMarkable hierarchy)
+        const parentPath = this.buildFolderPath(doc, allDocs);
         await this.ensureFolderExists(parentPath);
 
         // Create a folder for this notebook/document
