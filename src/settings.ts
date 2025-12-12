@@ -62,7 +62,7 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        new Setting(containerEl).setName('reMarkable sync settings').setHeading();
+        new Setting(containerEl).setName('Sync').setHeading();
 
         // Source folder section
         new Setting(containerEl).setName('Source').setHeading();
@@ -204,7 +204,7 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
                 }));
 
         // Import options section
-        new Setting(containerEl).setName('Import options').setHeading();
+        new Setting(containerEl).setName('Import').setHeading();
 
         new Setting(containerEl)
             .setName('Preserve layers')
@@ -279,6 +279,6 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Excalidraw plugin required')
-            .setDesc('This plugin requires the Excalidraw plugin to view imported drawings. Install it from: Settings → Community plugins → Browse → Search "Excalidraw"');
+            .setDesc('This plugin requires the Excalidraw plugin to view imported drawings. Install from settings, then community plugins, then browse and search for "Excalidraw".');
     }
 }

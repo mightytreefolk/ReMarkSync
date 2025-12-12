@@ -1,6 +1,6 @@
 import {
     RMVersion, PenType, RMColor, Point, Stroke,
-    ParsedDocument, ParseResult, V6BlockType
+    ParseResult, V6BlockType
 } from './types';
 import { HEADER_V3, HEADER_V5, HEADER_V6, HEADER_SIZES } from './constants';
 

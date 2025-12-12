@@ -152,7 +152,7 @@ export class SyncManager {
     /**
      * Build folder path for a document based on reMarkable folder hierarchy
      */
-    buildFolderPath(doc: RemarkableDocument, allDocs: RemarkableDocument[]): string {
+    buildFolderPath(doc: RemarkableDocument, _allDocs: RemarkableDocument[]): string {
         const parts: string[] = [];
         let currentParent = doc.parent;
 
@@ -294,7 +294,7 @@ export class SyncManager {
 
             try {
                 const rmData = fs.readFileSync(page.rmPath);
-                const parser = new RemarkableParser(rmData.buffer.slice(rmData.byteOffset, rmData.byteOffset + rmData.byteLength));
+                const parser = new RemarkableParser(rmData.buffer.slice(rmData.byteOffset, rmData.byteOffset + rmData.byteLength) as ArrayBuffer);
                 const parseResult = parser.parse();
 
                 if (!parseResult.success) {

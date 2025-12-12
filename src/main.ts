@@ -207,7 +207,7 @@ export default class RemarkableSyncPlugin extends Plugin {
         this.stopAutoSync();
         const intervalMs = getSyncIntervalMs(this.settings);
         this.autoSyncInterval = setInterval(() => {
-            this.runSync(true); // Silent mode for auto-sync
+            void this.runSync(true); // Silent mode for auto-sync
         }, intervalMs);
     }
 
@@ -293,7 +293,7 @@ export default class RemarkableSyncPlugin extends Plugin {
             const progressModal = new ImportProgressModal(this.app);
             progressModal.open();
 
-            (async () => {
+            void (async () => {
                 try {
                     const results: string[] = [];
 
