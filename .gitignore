@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+main.js
+*.js.map
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE
+.idea/
+*.swp
+*.swo
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test vault (local testing only)
+test_vault/
+
+# npm
+npm-debug.log*
+package-lock.json
+
+# Environment
+.env
+.env.local
