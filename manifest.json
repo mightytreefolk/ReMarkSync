@@ -3,7 +3,7 @@
   "name": "ReMarkable Sync",
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
-  "description": "Sync handwritten notes and PDF annotations from your ReMarkable tablet to Obsidian as Excalidraw drawings.",
+  "description": "Sync handwritten notes and PDF annotations from your ReMarkable tablet to users vault as Excalidraw drawings.",
   "author": "Peter Thompson",
   "authorUrl": "https://github.com/peterthompson",
   "isDesktopOnly": true
