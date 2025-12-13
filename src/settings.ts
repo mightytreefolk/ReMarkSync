@@ -195,7 +195,7 @@ export class RemarkableSyncSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Sync PDF annotations')
-            .setDesc('Import annotations from marked-up PDFs as separate Excalidraw files')
+            .setDesc('Imports annotations from annotated PDF documents as separate files')
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.syncPDFAnnotations)
                 .onChange(async (value) => {

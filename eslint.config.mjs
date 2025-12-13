@@ -19,11 +19,14 @@ export default defineConfig([
       },
     },
     rules: {
-      // Allow "reMarkable" brand name
+      // Match Obsidian's stricter sentence case checking
+      // Brand names with unusual capitalization
       "obsidianmd/ui/sentence-case": [
-        "warn",
+        "error",
         {
+          enforceCamelCaseLower: true,
           brands: ["reMarkable", "Excalidraw", "ReMarkSync"],
+          acronyms: ["PDF", "PDFs"],
         },
       ],
       // Relax some strict TypeScript rules for this project
